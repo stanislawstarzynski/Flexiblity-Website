@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}Flexibility Positions{% endblock %}
+
+{% block content %}
+<section id="positions">
+    <h2>Basic Flexibility Positions</h2>
+    <div class="positions-container">
+        <div class="position">
+            <h3>Forward Fold</h3>
+            <img src="{{ url_for('static', filename='images/forward-fold.png') }}" alt="Forward Fold Demonstration" class="position-image">
+            <p>The Forward Fold is a foundational position that not only targets the hamstrings but also decompresses the lower back and engages the entire posterior chain. Begin by standing tall with your feet hip-width apart, grounding through your heels. Initiate the movement by hinging at the hips rather than the lower back, maintaining a slight bend in the knees if needed. Let gravity guide your upper body as you fold forward, reaching your hands toward your toes, shins, or the floor. Focus on creating length in the spine and avoiding any excessive rounding in the upper back. This position is a gateway to deeper forward folds and is an excellent tool for improving hamstring flexibility and overall body awareness.</p>
+        </div>
+
+        <div class="position">
+            <h3>Bridge</h3>
+            <img src="{{ url_for('static', filename='images/bridge.png') }}" alt="Bridge Demonstration" class="position-image">
+            <p>The Bridge is a cornerstone of backbending practice that combines spinal extension with activation of the glutes and posterior chain. Begin by lying on your back with your knees bent and feet flat on the ground, about hip-width apart. Position your arms by your sides, palms pressing into the floor. Engage your glutes and core as you press through your heels to lift your hips toward the ceiling. Imagine creating a gentle arc through your spine while keeping your knees aligned and resisting the tendency to splay outward. This position builds the foundation for advanced backbends, helping to open the chest and strengthen the spinal erectors while promoting active flexibility.</p>
+        </div>
+
+        <div class="position">
+            <h3>Front Split</h3>
+            <img src="{{ url_for('static', filename='images/front-split.png') }}" alt="Front Split Demonstration" class="position-image">
+            <p>The Front Split, or Hanumanasana, is a hallmark position for hamstring and hip flexor flexibility. Begin in a lunge position, ensuring your front knee is stacked over your ankle and your back leg extends behind you. Gradually slide your front foot forward and your back knee backward, allowing your pelvis to descend toward the ground. The goal is to keep the hips square and avoid collapsing to one side. Use props such as yoga blocks or cushions to support your hands or hips as you work toward full extension. Focus on active engagement in both legs, using the muscles to hold the position rather than simply relying on passive stretching. This position not only improves flexibility but also enhances strength and control in the hip joints.</p>
+        </div>
+
+        <div class="position">
+            <h3>Middle Split</h3>
+            <img src="{{ url_for('static', filename='images/middle-split.png') }}" alt="Middle Split Demonstration" class="position-image">
+            <p>The Middle Split is a benchmark for lateral hip flexibility and inner thigh mobility. Start by sitting on the floor with your legs extended wide apart. Ensure that your toes point upward and your knees remain straight to maintain proper alignment. Gradually slide your feet outward as you lean your torso slightly forward. Engage your quadriceps and glutes to protect the hip joints and actively pull your legs apart. Avoid collapsing into your lower back; instead, think about lengthening your spine forward. This position is excellent for developing strength and flexibility in the adductors and preparing for deeper lateral splits.</p>
+        </div>
+
+        <div class="position">
+            <h3>Pancake</h3>
+            <img src="{{ url_for('static', filename='images/pancake.png') }}" alt="Pancake Demonstration" class="position-image">
+            <p>The Pancake is an advanced forward fold that emphasizes hip rotation and hamstring length. Begin in a seated straddle position with your legs spread wide apart. Engage your core and tilt your pelvis forward to initiate the fold from your hips rather than your back. Reach your arms forward, aiming to rest your chest closer to the ground. Focus on keeping your knees and toes pointed upward to maintain active engagement in the legs. This position not only stretches the inner thighs and hamstrings but also builds strength and control in the hip flexors, making it a staple in active flexibility training.</p>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

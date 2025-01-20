@@ -1,0 +1,148 @@
+{% extends "layout.html" %}
+
+{% block title %}Flexibility Survey{% endblock %}
+
+{% block content %}
+<section>
+    <h2>Find Your Flexibility Level</h2>
+    <form action="/submit-survey" method="POST" id="flexibility-survey">
+        <!-- Step 1: Choose a position -->
+        <div id="question-1" class="question">
+            <label for="position">Which position would you like to improve on?</label>
+            <select id="position" name="position" required>
+                <option value="" disabled selected>Select a position</option>
+                <option value="Forward Fold">Forward Fold</option>
+                <option value="Bridge">Bridge</option>
+                <option value="Front Split">Front Split</option>
+                <option value="Middle Split">Middle Split</option>
+                <option value="Pancake">Pancake</option>
+            </select>
+            <button type="button" onclick="showNextQuestion()">Next</button>
+        </div>
+
+        <!-- Placeholder for dynamic questions -->
+        <div id="dynamic-questions"></div>
+
+        <!-- Submit button (hidden initially) -->
+        <div id="submit-container" style="display: none;">
+            <button type="submit">Get Your Template</button>
+        </div>
+    </form>
+
+    <!-- Template Display Section -->
+    {% if template %}
+    <section id="template-display">
+        <h3>Your Training Template</h3>
+        <h4>{{ template.position_name }} - {{ template.template_level }}</h4>
+        <img src="{{ url_for('static', filename=template.image_path) }}" alt="{{ template.position_name }}">
+        <p>{{ template.description }}</p>
+    </section>
+    {% endif %}
+</section>
+
+<script>
+    let currentState = {};
+
+    function showNextQuestion() {
+        const position = document.getElementById('position').value;
+        currentState.position = position; // Save the position
+        const dynamicQuestions = document.getElementById('dynamic-questions');
+        dynamicQuestions.innerHTML = ""; // Clear previous questions
+        document.getElementById('submit-container').style.display = "none";
+
+        if (position === "Forward Fold") {
+            addQuestion(
+                "forward_fold_question",
+                "Can you reach your ankles in a Forward Fold position?",
+                ["Yes", "No"]
+            );
+        } else if (position === "Bridge") {
+            addQuestion(
+                "bridge_question",
+                "Can you perform a Feet Elevated Bridge?",
+                ["Yes", "No"]
+            );
+        } else if (position === "Front Split") {
+            addQuestion(
+                "front_split_question_1",
+                "Can you perform Forward Fold reaching the floor?",
+                ["Yes", "No"],
+                handleSecondFrontSplitQuestion
+            );
+        } else if (position === "Middle Split") {
+            addQuestion(
+                "middle_split_question",
+                "How far from the floor are you in the Middle Split position?",
+                ["30cm or more", "Less than 30cm"]
+            );
+        } else if (position === "Pancake") {
+            addQuestion(
+                "pancake_question",
+                "Can you touch the floor with your head in a seated Pancake position?",
+                ["Yes", "No"]
+            );
+        }
+    }
+
+    function addQuestion(name, question, options, onChangeHandler = null) {
+        const dynamicQuestions = document.getElementById('dynamic-questions');
+        const questionDiv = document.createElement("div");
+        questionDiv.className = "question";
+
+        // Create label
+        const label = document.createElement("label");
+        label.innerText = question;
+        questionDiv.appendChild(label);
+
+        // Create select dropdown
+        const select = document.createElement("select");
+        select.name = name;
+        select.required = true;
+
+        select.onchange = function () {
+            currentState[name] = this.value; // Save the answer
+            if (onChangeHandler) onChangeHandler(this.value);
+            // Enable submission for single-question positions
+            document.getElementById("submit-container").style.display = "block";
+        };
+
+        // Add default option
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        defaultOption.innerText = "Select an option";
+        select.appendChild(defaultOption);
+
+        // Add other options
+        options.forEach(option => {
+            const opt = document.createElement("option");
+            opt.value = option.toLowerCase();
+            opt.innerText = option;
+            select.appendChild(opt);
+        });
+
+        questionDiv.appendChild(select);
+        dynamicQuestions.appendChild(questionDiv);
+    }
+
+    function handleSecondFrontSplitQuestion(answer) {
+        const dynamicQuestions = document.getElementById('dynamic-questions');
+        dynamicQuestions.innerHTML = ""; // Clear previous question
+
+        if (answer === "no") {
+            currentState["front_split_level"] = "Beginner";
+            document.getElementById("submit-container").style.display = "block";
+        } else {
+            addQuestion(
+                "front_split_question_2",
+                "Can you perform Couch Stretch staying upright with your pelvis posteriorly tilted?",
+                ["Yes", "No"],
+                () => {
+                    document.getElementById("submit-container").style.display = "block";
+                }
+            );
+        }
+    }
+</script>
+{% endblock %}

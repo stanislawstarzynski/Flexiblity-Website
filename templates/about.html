@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+<section id="about">
+    <h2>About Flexibility Training</h2>
+    <p>Welcome to the Flexibility Training Website! Our platform is designed for individuals with some prior experience in training who are looking to enhance their range of motion in foundational flexibility positions. Whether you're refining your Forward Fold, Bridge, Front Split, Middle Split, or Pancake, we’re here to support your journey.</p>
+    <p>Through our interactive survey, you’ll receive personalized training templates tailored to your current level and goals. Use these templates to structure your practice effectively and track your progress over time.</p>
+    <p>Our progress tracking feature allows you to monitor improvements easily. Simply log into your account (or register if you’re new), upload your progress photos, and add descriptions. Revisit your profile regularly to celebrate your achievements and ensure you're on the right path.</p>
+    <p>We understand that some concepts and specialized vocabulary may seem unfamiliar. If you’re unsure about a position or term, don’t worry! Reach out to us through the contact form, and we’ll be happy to assist.</p>
+    <p>Take your flexibility training to the next level with us. Join today and work toward mastering these essential positions!</p>
+    <img src="{{ url_for('static', filename='images/middle-split.png') }}" alt="About Us Banner" style="max-width: 100%; height: auto; border-radius: 8px; display: block; margin: auto;">
+</section>
+{% endblock %}
+
+
