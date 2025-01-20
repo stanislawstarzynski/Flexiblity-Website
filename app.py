@@ -169,22 +169,32 @@ def logout():
 @login_required
 def profile():
     if request.method == 'POST':
-        photo = request.files['photo']
-        description = request.form['description']
+        photo = request.files.get('photo')  # Use `.get()` to avoid crashes if 'photo' is not in request
+        description = request.form.get('description', '')
 
+        # Validate the uploaded photo
         if photo and allowed_file(photo.filename):
-            photo_path = f'static/uploads/{photo.filename}'
+            # Create uploads directory if it doesn't exist
+            upload_folder = os.path.join('static', 'uploads')
+            os.makedirs(upload_folder, exist_ok=True)
+
+            # Save the file
+            photo_path = os.path.join(upload_folder, photo.filename)
             photo.save(photo_path)
 
+            # Save the progress entry to the database
             new_progress = Progress(user_id=session['user_id'], photo=photo_path, description=description)
             db.session.add(new_progress)
             db.session.commit()
+
             flash('Progress photo added successfully!')
         else:
             flash('Invalid file type. Please upload a valid image.')
 
+    # Fetch user's progress entries from the database
     progress_entries = Progress.query.filter_by(user_id=session['user_id']).all()
     return render_template('profile.html', username=session['username'], progress_entries=progress_entries)
+
 
 @app.errorhandler(404)
 def page_not_found(e):
