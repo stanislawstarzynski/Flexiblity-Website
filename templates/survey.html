@@ -41,13 +41,22 @@
 </section>
 
 <script>
+    // Declare an object to track the current state of the survey
     let currentState = {};
 
     function showNextQuestion() {
+        // Get the selected position value from the dropdown
         const position = document.getElementById('position').value;
+        
+        // Save the selected position to the current state
         currentState.position = position; // Save the position
+
+        // Get the dynamic questions container element
         const dynamicQuestions = document.getElementById('dynamic-questions');
+        
         dynamicQuestions.innerHTML = ""; // Clear previous questions
+
+        // Hide the submit button initially
         document.getElementById('submit-container').style.display = "none";
 
         if (position === "Forward Fold") {
@@ -84,8 +93,18 @@
         }
     }
 
+     /**
+     * Function to dynamically add a question to the form.
+     * @param {string} name - The name of the input field for the question.
+     * @param {string} question - The question text to be displayed.
+     * @param {Array} options - An array of answer options for the question.
+     * @param {Function|null} onChangeHandler - Optional callback to handle changes to the answer.
+     */
     function addQuestion(name, question, options, onChangeHandler = null) {
+        // Get the dynamic questions container
         const dynamicQuestions = document.getElementById('dynamic-questions');
+
+        // Create a container for the new question
         const questionDiv = document.createElement("div");
         questionDiv.className = "question";
 
@@ -96,12 +115,17 @@
 
         // Create select dropdown
         const select = document.createElement("select");
-        select.name = name;
-        select.required = true;
+        select.name = name; // Set the name for the select element
+        select.required = true; // Make it a required field
 
+        // Add an event listener for changes in the select dropdown
         select.onchange = function () {
-            currentState[name] = this.value; // Save the answer
+            // Save the selected answer to the current state
+            currentState[name] = this.value;
+
+            // If a callback is provided, call it with the selected answer
             if (onChangeHandler) onChangeHandler(this.value);
+            
             // Enable submission for single-question positions
             document.getElementById("submit-container").style.display = "block";
         };
@@ -122,23 +146,33 @@
             select.appendChild(opt);
         });
 
+        // Add the select dropdown to the question container
         questionDiv.appendChild(select);
+
+        // Add the question container to the dynamic questions section
         dynamicQuestions.appendChild(questionDiv);
     }
 
+     /**
+     * Function to handle displaying the second question for Front Split.
+     * @param {string} answer - The answer to the first Front Split question.
+     */
     function handleSecondFrontSplitQuestion(answer) {
         const dynamicQuestions = document.getElementById('dynamic-questions');
         dynamicQuestions.innerHTML = ""; // Clear previous question
 
+        // If the answer is "no", set the level to Beginner and show the submit button
         if (answer === "no") {
             currentState["front_split_level"] = "Beginner";
             document.getElementById("submit-container").style.display = "block";
         } else {
+            // If the answer is "no", set the level to Beginner and show the submit button
             addQuestion(
                 "front_split_question_2",
                 "Can you perform Couch Stretch staying upright with your pelvis posteriorly tilted?",
                 ["Yes", "No"],
                 () => {
+                    // Show the submit button after the second question is answered
                     document.getElementById("submit-container").style.display = "block";
                 }
             );
