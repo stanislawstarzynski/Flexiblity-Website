@@ -10,7 +10,9 @@ import os
 app = Flask(__name__)
 
 # Configuration
-app.secret_key = os.environ.get('SECRET_KEY', 'your_default_secret_key')  # Use environment variable or default
+app.secret_key = os.environ.get('SECRET_KEY', 'your_default_secret_key')
+
+# Set database file path using SQLAlchemy
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "instance", "database.db")}'
 
@@ -34,18 +36,22 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 # ==========================
 # DATABASE MODELS
 # ==========================
+
+# user in the system
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
+# user progress entries
 class Progress(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     photo = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
 
+# represents flexibility training templates
 class TrainingTemplate(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     position_name = db.Column(db.String(100), nullable=False)
@@ -56,12 +62,16 @@ class TrainingTemplate(db.Model):
 # ==========================
 # HELPER FUNCTIONS
 # ==========================
+
+# checks if a file is valid based on its extension
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# decorator to ensure a user is logged in before accessing certain routes
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+         # check if 'user_id' exists in the session
         if 'user_id' not in session:
             flash('Please log in to access this page.')
             return redirect(url_for('login'))
@@ -73,31 +83,38 @@ def login_required(f):
 # ==========================
 @app.route("/")
 def about():
+    """Displays the About page."""
     return render_template("about.html")
 
 @app.route("/positions")
 def positions():
+    """Displays the positions page."""
     return render_template("positions.html")
 
 @app.route("/survey")
 def survey():
+    """Displays the survey page."""
     return render_template("survey.html")
 
 @app.route("/contact")
 def contact():
+    """Displays the contact page."""
     return render_template("contact.html")
 
 @app.route('/submit-contact', methods=['POST'])
 def submit_contact():
+    """Handles contact form submission."""
     if request.method == 'POST':
         email = request.form['email']
         message = request.form['message']
 
+        # validate form data
         if not email or not message:
             flash('All fields are required.', 'error')
             return redirect(url_for('contact'))
 
         try:
+            # send email
             msg = Message('Contact Form Submission', recipients=[app.config['MAIL_USERNAME']])
             msg.body = f"From: {email}\n\nMessage:\n{message}"
             mail.send(msg)
@@ -115,6 +132,7 @@ def register():
             email = request.form['email']
             password = request.form['password']
 
+            # validate inputs
             if not username or not email or not password:
                 flash('All fields are required.')
                 return redirect(url_for('register'))
@@ -127,6 +145,7 @@ def register():
                 flash('Email already registered.')
                 return redirect(url_for('register'))
 
+            # save new user
             hashed_password = generate_password_hash(password)
             new_user = User(username=username, email=email, password=hashed_password)
             db.session.add(new_user)
@@ -198,6 +217,7 @@ def profile():
 
 @app.errorhandler(404)
 def page_not_found(e):
+    """handles 404 errors with a custom page."""
     return render_template('404.html'), 404
 
 @app.route('/submit-survey', methods=['POST'])
